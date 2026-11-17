@@ -16,13 +16,30 @@ load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN", "").strip()
 VK_TOKEN = os.getenv("VK_TOKEN", "").strip()
 VK_API_VERSION = os.getenv("VK_API_VERSION", "5.199")
-DB_PATH = Path(os.getenv("DB_PATH", "xoma_music.db"))
+DB_PATH = Path(os.getenv("DB_PATH", "/tmp/xoma_music.db")).expanduser()
 VK_API = "https://api.vk.com/method/"
 logging.basicConfig(level=logging.INFO)
 dp = Dispatcher()
 
 def db():
-    con = sqlite3.connect(DB_PATH)
+    DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+
+    con = sqlite3.connect(str(DB_PATH))
+
+    con.execute("""
+        CREATE TABLE IF NOT EXISTS uploads (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            artist TEXT,
+            title TEXT NOT NULL,
+            file_id TEXT NOT NULL,
+            file_type TEXT NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+
+    con.commit()
+    return con
     con.execute("""CREATE TABLE IF NOT EXISTS uploads (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER NOT NULL,

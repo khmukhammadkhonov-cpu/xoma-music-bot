@@ -16,7 +16,7 @@ load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN", "").strip()
 VK_TOKEN = os.getenv("VK_TOKEN", "").strip()
 VK_API_VERSION = os.getenv("VK_API_VERSION", "5.199")
-DB_PATH = Path(os.getenv("DB_PATH", "/tmp/xoma_music.db")).expanduser()
+DB_PATH = Path("/tmp/xoma_music.db")
 VK_API = "https://api.vk.com/method/"
 logging.basicConfig(level=logging.INFO)
 dp = Dispatcher()
